@@ -1,5 +1,4 @@
 ﻿using BackendPsychSite.Core.Models;
-using BackendPsychSite.DataAccess.Entities;
 using BackendPsychSite.UseCases.Interfaces;
 using BackendPsychSite.UseCases.Utils;
 namespace BackendPsychSite.Infrastructure.Services
@@ -17,7 +16,7 @@ namespace BackendPsychSite.Infrastructure.Services
         }
         public async Task<Guid> CreateAsync(Stream dataSetFile, DataSetArgs dataSetArgs)
         {
-            var prefix = dataSetArgs.ProjectName.ToLower().Trim()+"/"+dataSetArgs.Name;
+            var prefix = dataSetArgs.ProjectName.ToLower().Trim() + "/" + dataSetArgs.Name;
             DataSet dataSet = new DataSet(Guid.NewGuid(), dataSetArgs.Path, dataSetArgs.Name, prefix, dataSetFile);
             DataSetBucket dataSetBucket = new DataSetBucket { BucketName = dataSetArgs.UserEmail, ProjectPart = dataSetArgs.ProjectName, UserPart = dataSetArgs.UserEmail };
             await _repo.CreateAsync(dataSet, dataSetBucket);

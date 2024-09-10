@@ -1,7 +1,5 @@
 ﻿using BackendPsychSite.Core.Models;
-using BackendPsychSite.DataAccess.Entities;
 using BackendPsychSite.UseCases.Interfaces;
-using BackendPsychSite.UseCases.Utils;
 using Minio;
 using Minio.DataModel.Args;
 
@@ -21,15 +19,13 @@ namespace BackendPsychSite.DataAccess.Repositories
         }
         public async Task<Guid> CreateAsync(DataSet dataSet, DataSetBucket dataSetBucket)
         {
-            DataSetBucketEntity dataSetBucketEntity = new DataSetBucketEntity(dataSetBucket.BucketName, dataSetBucket.UserPart, dataSetBucket.ProjectPart);
-            DataSetEntity dataSetEntity = new DataSetEntity { Id = dataSet.Id, Name = dataSet.Prefix, Stream = dataSet.Stream, FilePath = dataSet.Path, Bucket = dataSetBucketEntity };
-            BucketExistsArgs bucketExistsArgs = new BucketExistsArgs().WithBucket(dataSetBucketEntity.UserPart);
+            BucketExistsArgs bucketExistsArgs = new BucketExistsArgs().WithBucket(dataSetBucket.UserPart);
             if (!await _client.BucketExistsAsync(bucketExistsArgs))
             {
-                MakeBucketArgs makeBucketArgs = new MakeBucketArgs().WithBucket(dataSetBucketEntity.UserPart);
+                MakeBucketArgs makeBucketArgs = new MakeBucketArgs().WithBucket(dataSetBucket.UserPart);
                 await _client.MakeBucketAsync(makeBucketArgs);
             }
-            PutObjectArgs putObjectArgs = new PutObjectArgs().WithBucket(dataSetBucketEntity.UserPart).WithObject(dataSetEntity.Name).WithStreamData(dataSet.Stream).WithObjectSize(dataSet.Stream.Length).WithContentType("application/xml");
+            PutObjectArgs putObjectArgs = new PutObjectArgs().WithBucket(dataSetBucket.UserPart).WithObject(dataSet.Prefix).WithStreamData(dataSet.Stream).WithObjectSize(dataSet.Stream.Length).WithContentType("text/csv");
             await _client.PutObjectAsync(putObjectArgs);
             return dataSet.Id;
         }
@@ -39,9 +35,15 @@ namespace BackendPsychSite.DataAccess.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<List<DataSet>> GetAsyncByProject()
+        public async Task<List<DataSet>> GetAsyncByProject(DataSet dataSet, DataSetBucket dataSetBucket)
         {
-            throw new NotImplementedException();
+            BucketExistsArgs bucketExistsArgs = new BucketExistsArgs().WithBucket(dataSetBucket.UserPart); //TODO: dataSetBucket.UserPart
+            if (!await _client.BucketExistsAsync(bucketExistsArgs))
+            {
+                throw new NotImplementedException();
+            }
+            await _client.GetObjectAsync(new GetObjectArgs().WithBucket(dataSetBucket.BucketName).WithObject(dataSet.Name));
+            return null;
         }
 
         public Task<List<DataSet>> GetAsyncByUser(Guid userId)

@@ -1,8 +1,8 @@
-using Minio.AspNetCore;
-using BackendPsychSite.UseCases.Interfaces;
-using BackendPsychSite.Infrastructure.Services;
 using BackendPsychSite.DataAccess.Repositories;
+using BackendPsychSite.Infrastructure.Services;
+using BackendPsychSite.UseCases.Interfaces;
 using Minio;
+using Minio.AspNetCore;
 namespace BackendPsychSite.API
 {
     public class Program
@@ -18,8 +18,8 @@ namespace BackendPsychSite.API
             builder.Services.AddMinio(options =>
             {
                 options.Endpoint = "localhost:9000";
-                options.SecretKey = "vXO4eIFOGL0FgOykmn9n7nRmEtoDEAlC0C01lLOq";
-                options.AccessKey = "ZuqvpoNqcyxn9XGsFlxG";
+                options.SecretKey = "nlrpP0Yd34kdB2PfbQZT0xak3H2thG3Qn05UpORo";
+                options.AccessKey = "5Cq2BoIL63yfeASTnnAi";
             });
             var app = builder.Build();
             if (app.Environment.IsDevelopment())

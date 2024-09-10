@@ -18,7 +18,7 @@
         public static DataSet Create(Guid id, string path, string name, string prefix, Stream stream)
         {
             // Можно добавить какие-то проверки
-            return new DataSet(id, path, name, prefix ,stream);
+            return new DataSet(id, path, name, prefix, stream);
         }
     }
 }
